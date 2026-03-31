@@ -16,7 +16,8 @@ public class ArrayList<T> implements List<T> {
         if (elements == null) {
             throw new IllegalArgumentException("Array cannot be null");
         }
-        this.elements = new Object[Math.max(DEFAULT_CAPACITY, elements.length)];
+        this.elements = new Object[DEFAULT_CAPACITY < elements.length
+                ? elements.length : DEFAULT_CAPACITY];
         int i = 0;
         for (T elem : elements) {
             this.elements[i] = elem;
@@ -33,7 +34,6 @@ public class ArrayList<T> implements List<T> {
     }
 
     private void arrayListIndexOutOfBoundException(int index) {
-        boolean resoul = true;
         if (index < 0 || index >= size) {
             throw new ArrayListIndexOutOfBoundsException("Index "
                     + index + " out of bounds for size " + size);
