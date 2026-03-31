@@ -28,12 +28,16 @@ public class ArrayList<T> implements List<T> {
     private void grow() {
         int newCapacity = elements.length + elements.length / 2;
         Object[] newElements = new Object[newCapacity];
-        int i = 0;
-        for (Object newArray : this.elements) {
-            newElements[i] = newArray;
-            i++;
-        }
+        System.arraycopy(elements, 0, newElements, 0, size);
         elements = newElements;
+    }
+
+    private void arrayListIndexOutOfBoundException(int index) {
+        boolean resoul = true;
+        if (index < 0 || index >= size) {
+            throw new ArrayListIndexOutOfBoundsException("Index "
+                    + index + " out of bounds for size " + size);
+        }
     }
 
     @Override
@@ -54,9 +58,13 @@ public class ArrayList<T> implements List<T> {
         if (this.size >= this.elements.length) {
             grow();
         }
-        for (int i = size - 1; i >= index; i--) {
-            elements[i + 1] = elements[i];
-        }
+        System.arraycopy(
+                this.elements,
+                index,
+                this.elements,
+                index + 1,
+                size - index
+        );
         elements[index] = value;
         size++;
     }
@@ -73,32 +81,29 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public T get(int index) {
-        if (index < 0 || index >= size) {
-            throw new ArrayListIndexOutOfBoundsException("Index "
-                    + index + " out of bounds for size " + size);
-        }
+        arrayListIndexOutOfBoundException(index);
         return (T) elements[index];
     }
 
     @Override
     public void set(T value, int index) {
-        if (index < 0 || index >= size) {
-            throw new ArrayListIndexOutOfBoundsException("Index "
-                    + index + " out of bounds for size " + size);
-        }
+        arrayListIndexOutOfBoundException(index);
         elements[index] = value;
     }
 
     @Override
     public T remove(int index) {
-        if (index < 0 || index >= size) {
-            throw new ArrayListIndexOutOfBoundsException("Index "
-                    + index + " out of bounds for size " + size);
-        }
+        arrayListIndexOutOfBoundException(index);
         final T removed = (T) this.elements[index];
-        for (int i = index; i < size - 1; i++) {
-            this.elements[i] = this.elements[i + 1];
-
+        int numMoved = size - index - 1;
+        if (numMoved > 0) {
+            System.arraycopy(
+                    elements,
+                    index + 1,
+                    elements,
+                    index,
+                    numMoved
+            );
         }
         elements[size - 1] = null;
         size--;
